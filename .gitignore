@@ -5,6 +5,10 @@
 *.suo
 *.user
 *.sln.docstates
+*.bak
+
+#Directory for individual tasks
+[Pp]ersonal/
 
 # Build results
 
