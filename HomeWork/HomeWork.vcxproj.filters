@@ -21,9 +21,15 @@
     <ClCompile Include="..\Personal\mywork.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="packcage.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Personal\mywork.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="packcage.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
