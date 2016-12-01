@@ -78,9 +78,11 @@
   <ItemGroup>
     <ClCompile Include="..\Personal\mywork.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="packcage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Personal\mywork.h" />
+    <ClInclude Include="packcage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
