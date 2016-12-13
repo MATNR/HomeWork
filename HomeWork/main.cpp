@@ -31,11 +31,16 @@ int main()
 	t->sent[1] = s;
 	cout << *t;
 
-	cout << t->sent[1]->word[2] << endl; 
+	cout << t->sent[1]->word[2]->symbols[2] << endl; 
 	// Без разыменования (есть оператор)
+  
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	Text *text = getText(inputText(cin));
-	if (text != NULL) doMyHomeWork(text);
+	//Text *text = getText(inputText());
+	//if (text != NULL) doMyHomeWork(text);
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	char *text = inputText();
+	cout << endl << text << endl;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	say("Завершение работы ...");
 	return 0;
 }

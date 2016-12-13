@@ -44,7 +44,7 @@ struct Text
 
 Прототипы функций, реализация - в packcage.cpp:
 ```cpp
-char* inputText(istream &input);        // Ввод и проверка текста
+char* inputText();                      // Ввод и проверка текста
 Text* getText(const char *txt);         // Формирование текста
 Sentence* getSentence(const char *txt); // Формирование предложения
 Word* getWord(const char *txt);         // Формирование слова
@@ -93,7 +93,7 @@ void say(const char *msg);              // Вспомогательная фун
 | Word | Михаил | OK |
 | Sentence | Михаил | OK |
 | Text | Михаил | OK |
-| inputText | Артем | NO |
+| inputText | Артем | OK |
 | getText | Артем, Михаил | NO |
 | getSentence | Никита, Михаил | NO |
 | getWord | Роман, Тагир | NO |
@@ -112,6 +112,8 @@ void say(const char *msg);              // Вспомогательная фун
 #### Список и описание основных веток #####
 `master` - основная ветка, защищена от записи  
 `readme-work` - ветка для работы над Readme.md  
+`shadow` - ветка изменений Михаилa  
+`HeliSRaiNBranch` - ветка изменений Тагира
 
 #### Небольшой перечень фактов ####
 1. Мастер-ветка (`master`) защищена от прямой записи и принудительных коммитов. Для внесения изменений создаем отдельные ветки и запрашиваем pull-request в мастер.  
