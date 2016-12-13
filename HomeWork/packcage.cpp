@@ -7,11 +7,31 @@
 //---------------------------------------------------------------------------
 // Ввод и проверка текста
 //---------------------------------------------------------------------------
-char* inputText(istream &input)
+char* inputText()
 {
-	char *text;
-	input.getline(text, MAX_TEXT_LEN, END_OF_TEXT);
-	// TODO: ПРОВЕРКА
+	char *text = new char[MAX_TEXT_LEN], ch;
+	int count = 0;
+	do {	
+		if (count >= MAX_TEXT_LEN-1) {
+			cout << "\nПревышен максимальный размер текста\n";
+			text[MAX_TEXT_LEN-1] = '\0';
+			return text;
+		}
+		ch = getch(); // Ввод символов "налету" по нажатию клавиш
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		// Проверка введенного символа
+		bool isLowerLatin = (ch >= 'a' && ch <= 'z');
+		bool isUpperLatin = (ch >= 'A' && ch <= 'Z');
+		bool isPunctMarks = (ch == ' ' || ch == ',' || ch == '.');
+		if ( isLowerLatin || isUpperLatin || isPunctMarks)
+			text[count++] = ch;
+		else if (ch == END_OF_TEXT)
+			text[count++] = '\0';
+		else
+			ch = BEEP_SYMBOL; // Аналогично: Beep(1000, 400);
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		cout << ch; // Выводим, чтобы пользователь видел, что он вводит
+	} while (ch != END_OF_TEXT);
 	return text;
 }
 //---------------------------------------------------------------------------
