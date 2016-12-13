@@ -33,6 +33,7 @@ int main()
 
 	cout << t->sent[1]->word[2]->symbols[2] << endl; 
 	// Без разыменования (есть оператор)
+  
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//Text *text = getText(inputText());
 	//if (text != NULL) doMyHomeWork(text);

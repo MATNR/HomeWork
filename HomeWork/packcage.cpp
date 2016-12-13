@@ -67,7 +67,6 @@ Text::~Text()
 Sentence* getSentence(const char *txt)
 {
 	if (txt == NULL) return NULL;
-
 	Sentence *sent = new Sentence;
 	// TODO: Посчитать sent->size
 	sent->word = new Word *[sent->size];
