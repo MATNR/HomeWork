@@ -7,10 +7,32 @@
 //---------------------------------------------------------------------------
 // Ввод и проверка текста
 //---------------------------------------------------------------------------
-char* inputText(istream &input)
+char* inputText()
 {
-	char *text = "Bond. James Bond. And, it is a good day to kill you";
-	return NULL;
+	char *text = new char[MAX_TEXT_LEN], ch;
+	int count = 0;
+	do {	
+		if (count >= MAX_TEXT_LEN-1) {
+			cout << "\nПревышен максимальный размер текста\n";
+			text[MAX_TEXT_LEN-1] = '\0';
+			return text;
+		}
+		ch = getch(); // Ввод символов "налету" по нажатию клавиш
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		// Проверка введенного символа
+		bool isLowerLatin = (ch >= 'a' && ch <= 'z');
+		bool isUpperLatin = (ch >= 'A' && ch <= 'Z');
+		bool isPunctMarks = (ch == ' ' || ch == ',' || ch == '.');
+		if ( isLowerLatin || isUpperLatin || isPunctMarks)
+			text[count++] = ch;
+		else if (ch == END_OF_TEXT)
+			text[count++] = '\0';
+		else
+			ch = BEEP_SYMBOL; // Аналогично: Beep(1000, 400);
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		cout << ch; // Выводим, чтобы пользователь видел, что он вводит
+	} while (ch != END_OF_TEXT);
+	return text;
 }
 //---------------------------------------------------------------------------
 // Формирование текста
@@ -19,7 +41,13 @@ Text* getText(const char *txt)
 {
 	if (txt == NULL) return NULL;
 	Text *text = new Text;
-	// TODO: Посчитать text->size
+	text->size = 1;
+	const char *ptr = txt;
+	while (*ptr != '\0')
+	{
+		if (*ptr == '.') text->size++;
+		ptr++;
+	}
 	text->sent = new Sentence *[text->size];
 	// TODO: В цикле делить txt на предложения с помощью strtok_s.
 	//       Для каждого нового token вызывать getSentence(token),
@@ -29,7 +57,8 @@ Text* getText(const char *txt)
 //---------------------------------------------------------------------------
 Text::~Text()
 {
-	// TODO: Очистить каждое предложение от 0 до size-1
+	for (int i = 0; i < size; i++)
+		delete [] sent[i];
 	if (DEBUG) cout << "Текст удален" << endl;
 }
 //---------------------------------------------------------------------------
@@ -59,14 +88,14 @@ Word* getWord(const char *txt)
 {
 	if (txt == NULL) return NULL;
 	Word *word = new Word;
-	// TODO: Произвести глубокое копирование txt в symbols
-	word->symbols = NULL; // TODO: заменить с использованием strcpy(...)
+	word->symbols = new char[strlen(txt)];
+	strcpy(word->symbols, txt);
 	return word;
 }
 //---------------------------------------------------------------------------
 Word::~Word()
 {
-	// TODO: очистить char *symbols
+	delete [] symbols;
 	if (DEBUG) cout << "Слово удалено" << endl;
 }
 //---------------------------------------------------------------------------

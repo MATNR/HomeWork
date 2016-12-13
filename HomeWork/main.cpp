@@ -1,7 +1,7 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 // File: main.cpp
-// Initial development:   SnipGhost
-// Further development:   HeliSRaiN
+// By:   HeliSRaiN 
+//       SnipGhost  
 //                                                        Главный файл работы
 //---------------------------------------------------------------------------
 #include "packcage.h"
@@ -14,37 +14,39 @@ int main()
 
 	menuRun(); //Визуализированное меню
 
-//ЗАТЁР HELISRAIN ---------------------------------
-	////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//// ПРОСТО ПРИМЕР!
-	////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//Word *w = new Word;
-	//w->len = 5;
-	//w->symbols = new char[w->len];
-	//w->symbols = "hell";
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// ПРОСТО ПРИМЕР!
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Word *w = new Word;
+	w->len = 5;
+	w->symbols = new char[w->len];
+	w->symbols = "hell";
 
-	//Sentence *s = new Sentence;
-	//s->size = 3;
-	//s->word = new Word*[s->size];
-	//s->word[0] = w;
-	//s->word[1] = w;
-	//s->word[2] = w;
+	Sentence *s = new Sentence;
+	s->size = 3;
+	s->word = new Word*[s->size];
+	s->word[0] = w;
+	s->word[1] = w;
+	s->word[2] = w;
 
-	//Text *t = new Text;
-	//t->size = 2;
-	//t->sent = new Sentence*[t->size];
-	//t->sent[0] = s;
-	//t->sent[1] = s;
-	//cout << *t;
-
-	//cout << t->sent[1]->word[2] << endl; 
-	//// Без разыменования (есть оператор)
-	////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//Text *text = getText(inputText(cin));
+	Text *t = new Text;
+	t->size = 2;
+	t->sent = new Sentence*[t->size];
+	t->sent[0] = s;
+	t->sent[1] = s;
+	cout << *t;
+  
+	cout << t->sent[1]->word[2]->symbols[2] << endl; 
+	// Без разыменования (есть оператор)
+  
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//Text *text = getText(inputText());
 	//if (text != NULL) doMyHomeWork(text);
-	//say("Завершение работы ...");
-//ЗАТЁР HELISRAIN ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	char *text = inputText();
+	cout << endl << text << endl;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	say("Завершение работы ...");
 	return 0;
 }
 //---------------------------------------------------------------------------
