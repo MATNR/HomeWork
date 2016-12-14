@@ -22,7 +22,7 @@ char* inputText()
 		// Проверка введенного символа
 		bool isLowerLatin = (ch >= 'a' && ch <= 'z');
 		bool isUpperLatin = (ch >= 'A' && ch <= 'Z');
-		bool isPunctMarks = (ch == ' ' || ch == ',' || ch == '.');
+		bool isPunctMarks = (ch == ' '||ch == ','||ch == '.'||ch == '-');
 		if ( isLowerLatin || isUpperLatin || isPunctMarks)
 			text[count++] = ch;
 		else if (ch == END_OF_TEXT)
@@ -41,25 +41,35 @@ Text* getText(const char *txt)
 {
 	if (txt == NULL) return NULL;
 	Text *text = new Text;
-	text->size = 1;
 	const char *ptr = txt;
-	while (*ptr != '\0')
+	text->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
+	while (*ptr != '\0')     // Считаем кол-во предложений (по точкам)
 	{
-		if (*ptr == '.') text->size++;
+		bool pass = (*(ptr+1) == ' ' && *(ptr+2) == '\0');
+		if (*ptr == '.' && *(ptr+1) != '\0' && !pass) text->size++; 
 		ptr++;
 	}
 	text->sent = new Sentence *[text->size];
-	// TODO: В цикле делить txt на предложения с помощью strtok_s.
-	//       Для каждого нового token вызывать getSentence(token),
-	//       где char *token - одно предложение
+	char *token, *next_token, *delim = ".";
+	token = new char[strlen(txt)+1];
+	strcpy(token, txt);
+	int count = 0;
+	token = strtok_s(token, delim, &next_token); 
+	while (token != NULL && count < text->size)
+	{
+		text->sent[count++] = getSentence(token);
+		token = strtok_s(NULL, delim, &next_token);
+	}
 	return text;
 }
 //---------------------------------------------------------------------------
 Text::~Text()
 {
+	if (DEBUG) cout << "[..] Удаление текста (" << size << " предложений)\n";
 	for (int i = 0; i < size; i++)
-		delete [] sent[i];
-	if (DEBUG) cout << "Текст удален" << endl;
+		delete sent[i];
+	delete [] sent;
+	if (DEBUG) cout << "[OK] Текст удален\n";
 }
 //---------------------------------------------------------------------------
 // Формирование педложения
@@ -68,18 +78,34 @@ Sentence* getSentence(const char *txt)
 {
 	if (txt == NULL) return NULL;
 	Sentence *sent = new Sentence;
-	// TODO: Посчитать sent->size
+	const char *ptr = txt;
+	sent->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
+	while (*ptr != '\0')     // Считаем кол-во слов (по пробелам)
+	{
+		if (*ptr == ' ' && *(ptr+1) != '\0' && ptr != txt) sent->size++;
+		ptr++;
+	}
 	sent->word = new Word *[sent->size];
-	// TODO: В цикле делить txt на слова с помощью strtok_s.
-	//       Для каждого нового token вызывать getWord(token),
-	//       где char *token - одно слово
+	char *token, *next_token, *delim = " ";
+	token = new char[strlen(txt)+1];
+	strcpy(token, txt);
+	int count = 0;
+	token = strtok_s(token, delim, &next_token);
+	while (token != NULL && count < sent->size)
+	{
+		sent->word[count++] = getWord(token);
+		token = strtok_s(NULL, delim, &next_token);
+	}
 	return sent;
 }
 //---------------------------------------------------------------------------
 Sentence::~Sentence()
 {
-	// TODO: Очистить каждое слово от 0 до size-1
-	if (DEBUG) cout << "Предложение удалено" << endl;
+	if (DEBUG) cout << "[..] Удаление предложения (" << size << " слов)\n";
+	for (int i = 0; i < size; i++)
+		delete word[i];
+	delete [] word;
+	if (DEBUG) cout << "[OK] Предложение удалено\n";
 }
 //---------------------------------------------------------------------------
 // Формирование слова
@@ -88,15 +114,23 @@ Word* getWord(const char *txt)
 {
 	if (txt == NULL) return NULL;
 	Word *word = new Word;
-	word->symbols = new char[strlen(txt)];
+	unsigned len = strlen(txt);
+	word->symbols = new char[len+1];
 	strcpy(word->symbols, txt);
+	if (txt[len-1] == ',') {
+		word->attr = 1;
+		word->symbols[len-1] = '\0';
+	} else {
+		word->attr = 0;
+	}
 	return word;
 }
 //---------------------------------------------------------------------------
 Word::~Word()
 {
+	if (DEBUG) cout << "[..] Удаление слова " << symbols << endl;
 	delete [] symbols;
-	if (DEBUG) cout << "Слово удалено" << endl;
+	if (DEBUG) cout << "[OK] Слово удалено\n";
 }
 //---------------------------------------------------------------------------
 // Вспомогательная функция вывода
@@ -104,5 +138,6 @@ Word::~Word()
 void say(const char *msg)
 {
 	cout << msg << endl;
+	system("pause");
 }
 //---------------------------------------------------------------------------

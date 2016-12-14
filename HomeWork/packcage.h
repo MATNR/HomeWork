@@ -16,13 +16,14 @@ using namespace std;
 //---------------------------------------------------------------------------
 const bool DEBUG = 1; // Вывоод отладочной информации - да/нет (1/0)
 const int MAX_TEXT_LEN = 1024;
-const char END_OF_TEXT = 0x04;
+const char END_OF_TEXT = 26;
 const char BEEP_SYMBOL = 0x07;
 //---------------------------------------------------------------------------
 struct Word 
 {
 	char *symbols;    // Массив символов слова
 	int len;          // Длина слова
+	int attr;         // Атрибуты слова (0 - ничего, 1 - запятая)
 	~Word();          // Очистка памяти
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// Классическая перегрузка оператора <<
@@ -36,6 +37,7 @@ struct Word
 	friend ostream& operator <<(ostream &os, const Word *n)
 	{
 		os << n->symbols;
+		if (n->attr) os << ',';
 		return os;
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,6 +55,17 @@ struct Sentence
 		{
 			os << *(n.word[i]);
 			if (i != n.size-1) os << " ";
+			else os << ".";
+		}
+		return os;
+	}
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	friend ostream& operator <<(ostream &os, const Sentence *n)
+	{
+		for (int i = 0; i < n->size; ++i)
+		{
+			os << *(n->word[i]);
+			if (i != n->size-1) os << " ";
 			else os << ".";
 		}
 		return os;
@@ -76,7 +89,18 @@ struct Text
 		}
 		return os;
 	}
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	friend ostream& operator <<(ostream &os, const Text *n)
+	{
+		for (int i = 0; i < n->size; ++i)
+		{
+			os << *(n->sent[i]);
+			if (i != n->size-1) os << " ";
+			else os << "\n";
+		}
+		return os;
+	}
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 };
 //---------------------------------------------------------------------------
 char* inputText();                      // Ввод и проверка текста
