@@ -16,8 +16,9 @@ using namespace std;
 //---------------------------------------------------------------------------
 const bool DEBUG = 1; // Вывоод отладочной информации - да/нет (1/0)
 const int MAX_TEXT_LEN = 1024;
-const char END_OF_TEXT = 26;
+const char END_OF_TEXT = 0x1a;
 const char BEEP_SYMBOL = 0x07;
+const char BACK_SYMBOL = 0x08;
 //---------------------------------------------------------------------------
 struct Word 
 {
