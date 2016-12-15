@@ -48,7 +48,8 @@ Text* getText(const char *txt)
 	while (*ptr != '\0')     // Считаем кол-во предложений (по точкам)
 	{
 		bool pass = (*(ptr+1) == ' ' && *(ptr+2) == '\0');
-		if (*ptr == '.' && *(ptr+1) != '\0' && !pass) text->size++; 
+		bool isPoint = (*ptr == '.' && *(ptr+1) != '.');
+		if (isPoint && *(ptr+1) != '\0' && !pass) text->size++; 
 		ptr++;
 	}
 	text->sent = new Sentence *[text->size];
