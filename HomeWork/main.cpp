@@ -23,13 +23,15 @@ int main()
 	}
 	//if (text != NULL) doMyHomeWork(text);
 
-	for (int i = 0; i < text->size; ++i) // Проходимся
+	for (int i = 0; i < text->size; ++i)
 	{
 		Sentence *s = text->sent[i];
+		if (s == NULL) continue;
 		cout << "\nПредложение #" << i << " " << s << endl;
 		for (int j = 0; j < s->size; ++j)
 		{
 			Word *w = s->word[j];
+			if (w == NULL) continue;
 			cout << "\tСлово #" << j << " " << *w << endl;
 			if (DEBUG) {
 				cout << "\t\tАтрибут = ";

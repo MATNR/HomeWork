@@ -50,9 +50,10 @@ char* inputText()
 Text* getText(const char *txt)
 {
 	if (txt == NULL) return NULL;
+	if (strlen(txt) == 0) return NULL;
 	Text *text = new Text;
 	const char *ptr = txt;
-	text->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
+	text->size = 1;
 	while (*ptr != '\0')     // Считаем кол-во предложений (по точкам)
 	{
 		bool isPoint = (*ptr == '.' && *(ptr+1) != '\0');
@@ -61,6 +62,7 @@ Text* getText(const char *txt)
 		ptr++;
 	}
 	text->sent = new Sentence *[text->size];
+	text->sent[0] = NULL;
 	char *token, *next_token, *delim = ".";
 	token = new char[strlen(txt)+1];
 	strcpy(token, txt);
@@ -72,6 +74,7 @@ Text* getText(const char *txt)
 			text->sent[count++] = getSentence(token);
 		token = strtok_s(NULL, delim, &next_token);
 	}
+	text->size = count;
 	return text;
 }
 //---------------------------------------------------------------------------
@@ -89,6 +92,7 @@ Text::~Text()
 Sentence* getSentence(const char *txt)
 {
 	if (txt == NULL) return NULL;
+	if (strlen(txt) == 0) return NULL;
 	Sentence *sent = new Sentence;
 	const char *ptr = txt;
 	sent->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
@@ -109,6 +113,7 @@ Sentence* getSentence(const char *txt)
 		sent->word[count++] = getWord(token);
 		token = strtok_s(NULL, delim, &next_token);
 	}
+	sent->size = count;
 	return sent;
 }
 //---------------------------------------------------------------------------
@@ -126,6 +131,7 @@ Sentence::~Sentence()
 Word* getWord(const char *txt)
 {
 	if (txt == NULL) return NULL;
+	if (strlen(txt) == 0) return NULL;
 	Word *word = new Word;
 	unsigned len = strlen(txt);
 	word->symbols = new char[len+1];
