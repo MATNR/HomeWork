@@ -1,6 +1,7 @@
 ﻿//---------------------------------------------------------------------------
 // File: packcage.cpp
 // By:   SnipGhost
+//       xXMEATXx
 //                                                         Библиотека функций
 //---------------------------------------------------------------------------
 #include "packcage.h"
@@ -9,39 +10,43 @@
 //---------------------------------------------------------------------------
 char* inputText()
 {
-	char *text = new char[MAX_TEXT_LEN], ch;
-	int count = 0;
+	char *text = new char[MAX_TEXT_LEN]; // Буфер ввода размером MAX_TEXT_LEN
+	char ch;                             // Очередной вводимый символ
+	int count = 0;                       // Счетчик введенных символов
 	do {	
-		if (count >= MAX_TEXT_LEN-1) {
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		if (count >= MAX_TEXT_LEN-1) {   // Проверяем на переполнение буфера
 			cout << "\nПревышен максимальный размер текста\n";
 			text[MAX_TEXT_LEN-1] = '\0';
 			return text;
 		}
-		ch = getch(); // Ввод символов "налету" по нажатию клавиш
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		ch = _getch(); // Ввод символов "налету" по нажатию клавиш
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// Проверка введенного символа
-		bool isLowerLatin = (ch >= 'a' && ch <= 'z');
-		bool isUpperLatin = (ch >= 'A' && ch <= 'Z');
-		bool isPunctMarks = (strchr(ALL_DELIMS, ch) != NULL);
+		bool isLowerLatin = (ch >= 'a' && ch <= 'z'); // Латинские строчные
+		bool isUpperLatin = (ch >= 'A' && ch <= 'Z'); // Латинские прописные
+		bool isPunctMarks = (strchr(ALL_DELIMS, ch) != NULL); // Прочие знаки
 		if ( isLowerLatin || isUpperLatin || isPunctMarks)
 		{
-			if (isPunctMarks && text[count-1] == ch)
-				ch = BEEP_SYMBOL;
+			if (isPunctMarks && text[count-1] == ch) // Запрещаем ввод двух
+				ch = BEEP_SYMBOL;                    // символов пунктуации
 			else
-				text[count++] = ch;
+				text[count++] = ch;                  // Пишем в буфер
 		}
-		else if (ch == BACK_SYMBOL && count > 0) 
+		else if (ch == BACK_SYMBOL && count > 0)     // Обрабатываем удаление
 		{
-			cout << BACK_SYMBOL << ' ';
-			count--;
+			cout << BACK_SYMBOL << ' ';              // Наводим красоту, Тём
+			count--;                                 // Двигаем на перезапись
 		}
-		else if (ch == SEOT_SYMBOL)
-			text[count++] = '\0';
+		else if (ch == SEOT_SYMBOL)                  // Если пытки завершены
+			text[count++] = '\0';                    // Добавляем конец стр.
 		else
 			ch = BEEP_SYMBOL; // Аналогично: Beep(1000, 400);
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		cout << ch; // Выводим, чтобы пользователь видел, что он вводит
-	} while (ch != SEOT_SYMBOL);
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	} while (ch != SEOT_SYMBOL); // Завершаем цикл когда ввели конец текста
 	return text;
 }
 //---------------------------------------------------------------------------
@@ -49,11 +54,13 @@ char* inputText()
 //---------------------------------------------------------------------------
 Text* getText(const char *txt)
 {
-	if (txt == NULL) return NULL;
-	if (strlen(txt) == 0) return NULL;
+	if (txt == NULL) return NULL;      // Критические случаи отказа
+	if (strlen(txt) == 0) return NULL; // На всякий аварийный
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Text *text = new Text;
 	const char *ptr = txt;
-	text->size = 1;
+	text->size = 1;          // Считаем, что найдем хоть одно предложение
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	while (*ptr != '\0')     // Считаем кол-во предложений (по точкам)
 	{
 		bool isPoint = (*ptr == '.' && *(ptr+1) != '\0');
@@ -61,29 +68,35 @@ Text* getText(const char *txt)
 		if (isPoint && !pass && ptr != txt) text->size++; 
 		ptr++;
 	}
-	text->sent = new Sentence *[text->size];
-	text->sent[0] = NULL;
-	char *token, *next_token, *delim = ".";
-	token = new char[strlen(txt)+1];
-	strcpy(token, txt);
-	int count = 0;
-	token = strtok_s(token, delim, &next_token); 
-	while (token != NULL && count < text->size)
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	text->sent = new Sentence *[text->size];     // Выделяем память
+	text->sent[0] = NULL;                        // Вдруг все будет плохо?
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	char *token, *next_token, *delim = ".", *line;
+	line = new char[strlen(txt)+1];
+	strcpy_s(line, strlen(txt)+1, txt);          // Т.к. txt - константен
+	int count = 0;                               // Кол-во предложений
+	token = strtok_s(line, delim, &next_token);  // Начинаем нарезать строку
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	while (token != NULL && count < text->size)  // И пока режется
 	{
-		if (strcmp(token, " ") != 0)
-			text->sent[count++] = getSentence(token);
-		token = strtok_s(NULL, delim, &next_token);
+		if (strcmp(token, " ") != 0)                  // Нахрен пустышки!
+			text->sent[count++] = getSentence(token); // Конструируем предл.
+		token = strtok_s(NULL, delim, &next_token);   // Режем дальше
 	}
-	text->size = count;
+	text->size = count;                               // Подгоняем размеры
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	delete [] line;
+	delete [] txt;                                    // Ну, это уже не нужно
 	return text;
 }
 //---------------------------------------------------------------------------
 Text::~Text()
 {
-	if (DEBUG) cout << "[..] Удаление текста (" << size << " предложений)\n";
+	if (DEBUG) cout << "[..] Удаление текста [" << size << " предложений(-я)]\n";
 	for (int i = 0; i < size; i++)
-		delete sent[i];
-	delete [] sent;
+		delete sent[i];            // Очищаем каждое предложение
+	delete [] sent;                // В топку пустые указатели
 	if (DEBUG) cout << "[OK] Текст удален\n";
 }
 //---------------------------------------------------------------------------
@@ -91,38 +104,44 @@ Text::~Text()
 //---------------------------------------------------------------------------
 Sentence* getSentence(const char *txt)
 {
-	if (txt == NULL) return NULL;
-	if (strlen(txt) == 0) return NULL;
+	if (txt == NULL) return NULL;      // Критические случаи отказа
+	if (strlen(txt) == 0) return NULL; // На всякий аварийный
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Sentence *sent = new Sentence;
 	const char *ptr = txt;
-	sent->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
+	sent->size = 1;          // Считаем, что найдем хоть одно предложение
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	while (*ptr != '\0')     // Считаем кол-во слов (по пробелам)
 	{
 		bool isSpace = (*ptr == ' ' && *(ptr+1) != '\0');
 		if (isSpace && ptr != txt) sent->size++;
 		ptr++;
 	}
-	sent->word = new Word *[sent->size];
-	char *token, *next_token, *delim = " ";
-	token = new char[strlen(txt)+1];
-	strcpy(token, txt);
-	int count = 0;
-	token = strtok_s(token, delim, &next_token);
-	while (token != NULL && count < sent->size)
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	sent->word = new Word *[sent->size];         // Выделяем память
+	char *token, *next_token, *delim = " ", *line;
+	line = new char[strlen(txt)+1];
+	strcpy_s(line, strlen(txt)+1, txt);          // Дежавю? Я это уже писал
+	int count = 0;                               // Кол-во слов
+	token = strtok_s(line, delim, &next_token);  // Начинаем нарезать строку
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	while (token != NULL && count < sent->size)  // Пока режется - наздоровье
 	{
-		sent->word[count++] = getWord(token);
-		token = strtok_s(NULL, delim, &next_token);
+		sent->word[count++] = getWord(token);       // Конструируем слово
+		token = strtok_s(NULL, delim, &next_token); // Режем дальше
 	}
-	sent->size = count;
+	sent->size = count;        // Подгоняем снова - безопасность прежде всего
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	delete [] line;
 	return sent;
 }
 //---------------------------------------------------------------------------
 Sentence::~Sentence()
 {
-	if (DEBUG) cout << "[..] Удаление предложения (" << size << " слов)\n";
-	for (int i = 0; i < size; i++)
-		delete word[i];
-	delete [] word;
+	if (DEBUG) cout << "[..] Удаление предложения [" << size << " слов(-а)]\n";
+	for (int i = 0; i < size; i++) 
+		delete word[i];            // Очищаем каждое слово
+	delete [] word;                // И пустые указатели тоже в топку
 	if (DEBUG) cout << "[OK] Предложение удалено\n";
 }
 //---------------------------------------------------------------------------
@@ -130,26 +149,29 @@ Sentence::~Sentence()
 //---------------------------------------------------------------------------
 Word* getWord(const char *txt)
 {
-	if (txt == NULL) return NULL;
-	if (strlen(txt) == 0) return NULL;
+	if (txt == NULL) return NULL;      // Критические случаи отказа
+	if (strlen(txt) == 0) return NULL; // На всякий аварийный
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Word *word = new Word;
-	unsigned len = strlen(txt);
-	word->symbols = new char[len+1];
-	strcpy(word->symbols, txt);
-	if (strchr(ALL_DELIMS, txt[len-1])) {
-		word->attr = word->symbols[len-1];
-		word->symbols[len-1] = '\0';
+	unsigned len = strlen(txt);          // Измеряем длину
+	word->symbols = new char[len+1];     // Выделяем память (с учетом '\0')
+	strcpy_s(word->symbols, len+1, txt); // Глубокое копирование
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if (strchr(ALL_DELIMS, txt[len-1])) {   // Смотрим, есть ли хвост
+		word->attr = word->symbols[len-1];  // Создаем вместо него атрибут
+		word->symbols[len-1] = '\0';        // Обрезаем хвост
 	} else {
-		word->attr = 0;
+		word->attr = 0;                     // Хвоста нет - нет атрибутов
 	}
-	word->flag = false;
+	word->flag = false;                     // Инициализируем Ф.О.Н.
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return word;
 }
 //---------------------------------------------------------------------------
 Word::~Word()
 {
 	if (DEBUG) cout << "[..] Удаление слова " << symbols << endl;
-	delete [] symbols;
+	delete [] symbols;  // Очистились от грехов?
 	if (DEBUG) cout << "[OK] Слово удалено\n";
 }
 //---------------------------------------------------------------------------
@@ -157,7 +179,7 @@ Word::~Word()
 //---------------------------------------------------------------------------
 void say(const char *msg)
 {
-	cout << msg << endl;
+	cout << msg << endl; // Бесполезная функция. Прямо как наша жизнь.
 	system("pause");
 }
 //---------------------------------------------------------------------------
