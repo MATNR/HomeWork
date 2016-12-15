@@ -84,7 +84,8 @@ Sentence* getSentence(const char *txt)
 	sent->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
 	while (*ptr != '\0')     // Считаем кол-во слов (по пробелам)
 	{
-		if (*ptr == ' ' && *(ptr+1) != '\0' && ptr != txt) sent->size++;
+		bool isSpace = *ptr == ' ' && *(ptr+1) != ' ';
+		if (isSpace && *(ptr+1) != '\0' && ptr != txt) sent->size++;
 		ptr++;
 	}
 	sent->word = new Word *[sent->size];
