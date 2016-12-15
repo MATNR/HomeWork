@@ -4,7 +4,6 @@
 //                                                Файл визуализации программы
 //---------------------------------------------------------------------------
 #include "interface.h"
-#include "packcage.h"
 //---------------------------------------------------------------------------
 HWND hwnd = FindWindow("ConsoleWindowClass", NULL); //Вызываем хэндлер
 HDC dc = GetDC(hwnd);
@@ -118,35 +117,35 @@ void menuDesign()
 }
 //---------------------------------------------------------------------------
 //ИНТЕРФЕЙС СТРАНИЦЫ "ВВОД ТЕКСТА"
-void entryTextInter() 
+void entryTextInter(Text *&text) 
 {
 	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем предыдущее
 	system("CLS"); //Очищаем от текста
 	drawImageToDisplay("image//EnterText.bmp", 50, 250, 15, 15); //Вывод картинки "Ввод текста"
 	int checkEntry = 0;
-	int y; //УДАЛИТЬ ПРИ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА
 	do { 
-	cout << "\n\n\n\n\n\n"; //Отступ подправлен под картинку
-	cin >> y; //УДАЛИТЬ ПРИ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА
+		cout << "\n\n\n\n\n\n"; // Отступ подправлен под картинку
 
-	//ПОДПРАВИТЬ ПРОВЕРКУ ПОСЛЕ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА ~~~~~~~~~~~~~~~~~~~~~~
-	if (y == 666) { checkEntry = 1; } else {  //666 - верное число... вухахах 
-		checkEntry = 0; 
-		system("CLS");
-		drawImageToDisplay("image//RewriteText.bmp", 50, 250, 15, 15); //Вывод картинки "ПЛОХОЙ ТЕКСТ, ПОПРОБУЙТЕ СНОВА"
-	}
-	//ПОДПРАВИТЬ ПРОВЕРКУ ПОСЛЕ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА ~~~~~~~~~~~~~~~~~~~~~~
+		// <<<<<< SnipGhost
+		text = getText(inputText());   // Вводим текст
+		if (text == NULL) {            // Проверяем его
+			checkEntry = 0; 
+			system("CLS");
+			drawImageToDisplay("image//RewriteText.bmp", 50, 250, 15, 15); //Вывод картинки "ПЛОХОЙ ТЕКСТ, ПОПРОБУЙТЕ СНОВА"
+		} else {
+			checkEntry = 1;
+		}
+		// >>>>>> SnipGhost
 
 	} while (checkEntry == 0);
 
 	if (checkEntry == 1) { //Если этап с проверкой правильности текста прошёл на ОК
 		checkFirstAct = true; //Первый этап пройден, теперь нам открыт второй пункт меню!
 	}
-	}
-
+}
 //---------------------------------------------------------------------------
 //ИНТЕРФЕЙС СТРАНИЦЫ "ИНДИВИДУАЛЬНОЕ ЗАДАНИЕ"
-void indivTaskInter() 
+void indivTaskInter(Text *&text) 
 {
 	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем предыдущее
 	system("CLS"); //Очищаем от текста
@@ -158,55 +157,58 @@ void indivTaskInter()
 			 cout << "Выйти в меню? 1/0" << endl;
 			 cin >> checkExit;
 		}
-		returnToMenu();
+		returnToMenu(text);
 	} else {
 		drawImageToDisplay("image//indivTask.bmp", 50, 250, 15, 15); //Вывод картинки "Индивидуальные задания НЕДОСТУПНЫ!"
 
+		cout << "\n\n\n\n\n\n\n"; //Отступ подправлен под картинку
 		//ВЫВОД КАЖДОГО ИНДИВИДУАЛЬНОГО ЗАДАНИЯ И ЕГО ОТВЕТА
 		//doMyHomeWork(text); // Функция выполнения домашнего задания [:SG:]
+		printText(text);
 
 		while (checkExit == 0) {
-			cout << "\n\n\n\n\n\n\n"; //Отступ подправлен под картинку
+			
 			cout << "Выйти в меню? 1/0" << endl;
 			cin >> checkExit;
 		}
-		returnToMenu();
+		returnToMenu(text);
 	}
 }
 //---------------------------------------------------------------------------
 //ТУТ ПРОИЗВОДИТСЯ ПРИВЯЗКА К ДЕЙСТВИЮ ПОСЛЕ ВВОДА КОМАНДЫ
-int menuDo()
+int menuDo(Text *&text)
 {
 	menuDesign();
-	switch (point){
-	case 1: //ВВОД ТЕКСТА
-		entryTextInter(); 
-		returnToMenu();
-	break;
-	case 2: //ИНДИВИДУАЛЬНЫЕ ЗАДАНИЯ
-		indivTaskInter();
-		returnToMenu();
-	break;
-	case 3: 
-		return 0; //Выход
-	break;
+	switch (point)
+	{
+		case 1: //ВВОД ТЕКСТА
+			entryTextInter(text); 
+			returnToMenu(text);
+		break;
+		case 2: //ИНДИВИДУАЛЬНЫЕ ЗАДАНИЯ
+			indivTaskInter(text);
+			returnToMenu(text);
+		break;
+		case 3: 
+			return 0; //Выход
+		break;
 	}
 	return 0;
 }
 //---------------------------------------------------------------------------
-void returnToMenu()
+void returnToMenu(Text *&text)
 {
 	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем чёрной шапкой
 	system("CLS");
-	menuDo();
+	menuDo(text);
 }
  //---------------------------------------------------------------------------
-int menuRun () 
+int menuRun(Text *&text) 
 {
 	system("chcp 1251 > nul"); // Русифицируем
 	animationLogo();           // Выводим лого
 	system("CLS");             // Выносим все текстовые из консольки
-	menuDo(); 
+	menuDo(text); 
 	return 0;
 }
 //---------------------------------------------------------------------------

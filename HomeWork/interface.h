@@ -11,6 +11,7 @@
 #include <conio.h>
 #include <iostream>
 #include <dos.h>
+#include "packcage.h"
 //---------------------------------------------------------------------------
 #define SMALL_SPACE ("                     ")
 #define LONG_SPACE ("                                ")
@@ -20,7 +21,7 @@ const int WAIT_TIME_TO_PRINT = 250;
 const int WAIT_TIME_TO_LOGO = 500;
 const int WAIT_TIME_TO_HIDE = 2000;
 //---------------------------------------------------------------------------
-int menuRun();
-void returnToMenu(); //Функция, которая возвращает в начальное меню
+int menuRun(Text *&text);
+void returnToMenu(Text *&text); //Функция, которая возвращает в начальное меню
 //---------------------------------------------------------------------------
 #endif 
