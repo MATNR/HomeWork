@@ -1,16 +1,17 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 // File: interface.cpp
 // By:   HeliSRaiN
-//                                                Файл визуализации программы
+//                                                Р¤Р°Р№Р» РІРёР·СѓР°Р»РёР·Р°С†РёРё РїСЂРѕРіСЂР°РјРјС‹
 //---------------------------------------------------------------------------
 #include "interface.h"
 #include "packcage.h"
 //---------------------------------------------------------------------------
-HWND hwnd = FindWindow("ConsoleWindowClass", NULL); //Вызываем хэндлер
+HWND hwnd = FindWindow("ConsoleWindowClass", NULL); //Р’С‹Р·С‹РІР°РµРј С…СЌРЅРґР»РµСЂ
 HDC dc = GetDC(hwnd);
 int point = 0;
+bool checkFirstAct = false; //РџРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РїСЂРѕРІРµСЂРєРё 
 //---------------------------------------------------------------------------
-enum color { //А - более светлый вариант, B - более тёмный
+enum color { //Рђ - Р±РѕР»РµРµ СЃРІРµС‚Р»С‹Р№ РІР°СЂРёР°РЅС‚, B - Р±РѕР»РµРµ С‚С‘РјРЅС‹Р№
 	BLACK = 0,
 	BLUE_B,
 	GREEN_B,
@@ -37,23 +38,23 @@ void SetColor(color text, color background)
 //---------------------------------------------------------------------------
 void drawBitmap(HDC hdcA, int x, int y, HBITMAP hbmA)
 {
-		BITMAP bm; //Технология хранения граф. файлов - BMP
+		BITMAP bm; //РўРµС…РЅРѕР»РѕРіРёСЏ С…СЂР°РЅРµРЅРёСЏ РіСЂР°С„. С„Р°Р№Р»РѕРІ - BMP
 		POINT ptSize, ptOrg;
-		HDC hdcB = CreateCompatibleDC(hdcA); //"Помогатор" для правильного рисования. Он создаёт контекст памяти. Вроде усё.
-		HBITMAP hbmB = (HBITMAP)SelectObject(hdcB, hbmA); //Оператор, который помогает загружать изображение в память
-		if (hbmB){ //Если ошибок нема, то продолжает
+		HDC hdcB = CreateCompatibleDC(hdcA); //"РџРѕРјРѕРіР°С‚РѕСЂ" РґР»СЏ РїСЂР°РІРёР»СЊРЅРѕРіРѕ СЂРёСЃРѕРІР°РЅРёСЏ. РћРЅ СЃРѕР·РґР°С‘С‚ РєРѕРЅС‚РµРєСЃС‚ РїР°РјСЏС‚Рё. Р’СЂРѕРґРµ СѓСЃС‘.
+		HBITMAP hbmB = (HBITMAP)SelectObject(hdcB, hbmA); //РћРїРµСЂР°С‚РѕСЂ, РєРѕС‚РѕСЂС‹Р№ РїРѕРјРѕРіР°РµС‚ Р·Р°РіСЂСѓР¶Р°С‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РІ РїР°РјСЏС‚СЊ
+		if (hbmB){ //Р•СЃР»Рё РѕС€РёР±РѕРє РЅРµРјР°, С‚Рѕ РїСЂРѕРґРѕР»Р¶Р°РµС‚
 			SetMapMode(hdcB, GetMapMode(hdcA));
-			GetObject(hbmA, sizeof(BITMAP), (LPSTR) &bm); // Определяем размеры нашего изображения
-			ptSize.x = bm.bmWidth; //Тута ширина
-			ptSize.y = bm.bmHeight; //Тута высота
-			DPtoLP(hdcA, &ptSize, 1); //Перевод с одних координат на другие.. тут не понял, нафига? Умные штуки
-			ptOrg.x = 0; //Обнуляем
-			ptOrg.y = 0; //Обнуляем
-			DPtoLP(hdcB, &ptOrg, 1); //Перевод с одних координат на другие.. опять, но переводит значение hdcB в другую
-			BitBlt(hdcA, x, y, ptSize.x, ptSize.y, hdcB, ptOrg.x, ptOrg.y, SRCCOPY); //ВОООТ, сам процесс рисовки!
-			SelectObject(hdcB, hbmB); //Возвращаем начальные значения контекста памяти
+			GetObject(hbmA, sizeof(BITMAP), (LPSTR) &bm); // РћРїСЂРµРґРµР»СЏРµРј СЂР°Р·РјРµСЂС‹ РЅР°С€РµРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+			ptSize.x = bm.bmWidth; //РўСѓС‚Р° С€РёСЂРёРЅР°
+			ptSize.y = bm.bmHeight; //РўСѓС‚Р° РІС‹СЃРѕС‚Р°
+			DPtoLP(hdcA, &ptSize, 1); //РџРµСЂРµРІРѕРґ СЃ РѕРґРЅРёС… РєРѕРѕСЂРґРёРЅР°С‚ РЅР° РґСЂСѓРіРёРµ.. С‚СѓС‚ РЅРµ РїРѕРЅСЏР», РЅР°С„РёРіР°? РЈРјРЅС‹Рµ С€С‚СѓРєРё
+			ptOrg.x = 0; //РћР±РЅСѓР»СЏРµРј
+			ptOrg.y = 0; //РћР±РЅСѓР»СЏРµРј
+			DPtoLP(hdcB, &ptOrg, 1); //РџРµСЂРµРІРѕРґ СЃ РѕРґРЅРёС… РєРѕРѕСЂРґРёРЅР°С‚ РЅР° РґСЂСѓРіРёРµ.. РѕРїСЏС‚СЊ, РЅРѕ РїРµСЂРµРІРѕРґРёС‚ Р·РЅР°С‡РµРЅРёРµ hdcB РІ РґСЂСѓРіСѓСЋ
+			BitBlt(hdcA, x, y, ptSize.x, ptSize.y, hdcB, ptOrg.x, ptOrg.y, SRCCOPY); //Р’РћРћРћРў, СЃР°Рј РїСЂРѕС†РµСЃСЃ СЂРёСЃРѕРІРєРё!
+			SelectObject(hdcB, hbmB); //Р’РѕР·РІСЂР°С‰Р°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РєРѕРЅС‚РµРєСЃС‚Р° РїР°РјСЏС‚Рё
 		}
-		DeleteDC(hdcB); //И к херам его удаляем (контекст памяти)
+		DeleteDC(hdcB); //Р Рє С…РµСЂР°Рј РµРіРѕ СѓРґР°Р»СЏРµРј (РєРѕРЅС‚РµРєСЃС‚ РїР°РјСЏС‚Рё)
 }
 //---------------------------------------------------------------------------
 void drawImageToDisplay(char *logoDir, int height, int width, int x, int y)
@@ -62,7 +63,7 @@ void drawImageToDisplay(char *logoDir, int height, int width, int x, int y)
 	PAINTSTRUCT ps;  
 	static char MyName[260]={0};
 	GetModuleFileNameA(NULL, MyName, sizeof(MyName));
-	HWND hwnd = FindWindow(NULL, MyName); //Вызываем хандлер
+	HWND hwnd = FindWindow(NULL, MyName); //Р’С‹Р·С‹РІР°РµРј С…Р°РЅРґР»РµСЂ
 	HDC hdc;
 	hdc = GetWindowDC(hwnd);
 	hBitmap = (HBITMAP)LoadImage(NULL, logoDir, IMAGE_BITMAP, width, height, LR_LOADFROMFILE);
@@ -74,30 +75,30 @@ void drawImageToDisplay(char *logoDir, int height, int width, int x, int y)
 //---------------------------------------------------------------------------
 void animationLogo()
 {
-	drawImageToDisplay("image//LogoImage.bmp", 175, 500, 30, 30); //Выводим наше распрекрасное лого
+	drawImageToDisplay("image//LogoImage.bmp", 175, 500, 30, 30); //Р’С‹РІРѕРґРёРј РЅР°С€Рµ СЂР°СЃРїСЂРµРєСЂР°СЃРЅРѕРµ Р»РѕРіРѕ
 	Sleep(WAIT_TIME_TO_LOGO);
 
 	for (int t = 0; t < 18; t++) cout << "\n";
 	SetColor(YELLOW, BLACK);
-	cout << SMALL_SPACE << "ДЗ ПО ОСНОВАМ ПРОГРАММИРОВАНИЯ" << endl;
+	cout << SMALL_SPACE << "Р”Р— РџРћ РћРЎРќРћР’РђРњ РџР РћР“Р РђРњРњРР РћР’РђРќРРЇ" << endl;
 	SetColor(WHITE, BLACK);
 	Sleep(WAIT_TIME_TO_PRINT);
 	SetColor(RED_A, BLACK);
-	cout << SMALL_SPACE << "КОМАНДА 2: "; 
+	cout << SMALL_SPACE << "РљРћРњРђРќР”Рђ 2: "; 
 	SetColor(WHITE, BLACK);
 	Sleep(WAIT_TIME_TO_PRINT);
-	cout << "Михаил Кучеренко" << endl;
+	cout << "РњРёС…Р°РёР» РљСѓС‡РµСЂРµРЅРєРѕ" << endl;
 	Sleep(WAIT_TIME_TO_PRINT);
-	cout << LONG_SPACE << "Артём Сахаров" << endl;
+	cout << LONG_SPACE << "РђСЂС‚С‘Рј РЎР°С…Р°СЂРѕРІ" << endl;
 	Sleep(WAIT_TIME_TO_PRINT);
-	cout << LONG_SPACE << "Тагир Ханмурзин" << endl;
+	cout << LONG_SPACE << "РўР°РіРёСЂ РҐР°РЅРјСѓСЂР·РёРЅ" << endl;
 	Sleep(WAIT_TIME_TO_PRINT);
-	cout << LONG_SPACE << "Никита Москальцов" << endl;
+	cout << LONG_SPACE << "РќРёРєРёС‚Р° РњРѕСЃРєР°Р»СЊС†РѕРІ" << endl;
 	Sleep(WAIT_TIME_TO_PRINT);
-	cout << LONG_SPACE << "Роман Мирзоян" << endl;
+	cout << LONG_SPACE << "Р РѕРјР°РЅ РњРёСЂР·РѕСЏРЅ" << endl;
 
 	Sleep(WAIT_TIME_TO_HIDE);
-	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //По простунски прикрываем всё "чёрной шапочкой"
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //РџРѕ РїСЂРѕСЃС‚СѓРЅСЃРєРё РїСЂРёРєСЂС‹РІР°РµРј РІСЃС‘ "С‡С‘СЂРЅРѕР№ С€Р°РїРѕС‡РєРѕР№"
 }
 //---------------------------------------------------------------------------
 void menuDesign()
@@ -106,7 +107,7 @@ void menuDesign()
 	drawImageToDisplay("image//EnterComands.bmp", 50, 250, 195, 15);
 	for (int t = 0; t < 21; t++) cout << "\n";
 	cin >> point;
-	while (point >= 5 || point == 0){
+	while (point >= 4 || point == 0){
 	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0);
 	drawImageToDisplay("image//Menu.bmp", 190, 250, 15, 15);
 	drawImageToDisplay("image//FailComand.bmp", 50, 250, 195, 15);
@@ -116,22 +117,77 @@ void menuDesign()
 	}
 }
 //---------------------------------------------------------------------------
-//ТУТ ПРОИЗВОДИТСЯ ПРИВЯЗКА К ДЕЙСТВИЮ ПОСЛЕ ВВОДА КОМАНДЫ
+//РРќРўР•Р Р¤Р•Р™РЎ РЎРўР РђРќРР¦Р« "Р’Р’РћР” РўР•РљРЎРўРђ"
+void entryTextInter() 
+{
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Р—Р°РјР°Р·С‹РІР°РµРј РїСЂРµРґС‹РґСѓС‰РµРµ
+	system("CLS"); //РћС‡РёС‰Р°РµРј РѕС‚ С‚РµРєСЃС‚Р°
+	drawImageToDisplay("image//EnterText.bmp", 50, 250, 15, 15); //Р’С‹РІРѕРґ РєР°СЂС‚РёРЅРєРё "Р’РІРѕРґ С‚РµРєСЃС‚Р°"
+	int checkEntry = 0;
+	int y; //РЈР”РђР›РРўР¬ РџР Р Р’РљР›Р®Р§Р•РќРР Р¤РЈРќРљР¦РР Р’Р’РћР”Рђ
+	do { 
+	cout << "\n\n\n\n\n\n"; //РћС‚СЃС‚СѓРї РїРѕРґРїСЂР°РІР»РµРЅ РїРѕРґ РєР°СЂС‚РёРЅРєСѓ
+	cin >> y; //РЈР”РђР›РРўР¬ РџР Р Р’РљР›Р®Р§Р•РќРР Р¤РЈРќРљР¦РР Р’Р’РћР”Рђ
+
+	//РџРћР”РџР РђР’РРўР¬ РџР РћР’Р•Р РљРЈ РџРћРЎР›Р• Р’РљР›Р®Р§Р•РќРР Р¤РЈРќРљР¦РР Р’Р’РћР”Рђ ~~~~~~~~~~~~~~~~~~~~~~
+	if (y == 666) { checkEntry = 1; } else {  //666 - РІРµСЂРЅРѕРµ С‡РёСЃР»Рѕ... РІСѓС…Р°С…Р°С… 
+		checkEntry = 0; 
+		system("CLS");
+		drawImageToDisplay("image//RewriteText.bmp", 50, 250, 15, 15); //Р’С‹РІРѕРґ РєР°СЂС‚РёРЅРєРё "РџР›РћРҐРћР™ РўР•РљРЎРў, РџРћРџР РћР‘РЈР™РўР• РЎРќРћР’Рђ"
+	}
+	//РџРћР”РџР РђР’РРўР¬ РџР РћР’Р•Р РљРЈ РџРћРЎР›Р• Р’РљР›Р®Р§Р•РќРР Р¤РЈРќРљР¦РР Р’Р’РћР”Рђ ~~~~~~~~~~~~~~~~~~~~~~
+
+	} while (checkEntry == 0);
+
+	if (checkEntry == 1) { //Р•СЃР»Рё СЌС‚Р°Рї СЃ РїСЂРѕРІРµСЂРєРѕР№ РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё С‚РµРєСЃС‚Р° РїСЂРѕС€С‘Р» РЅР° РћРљ
+		checkFirstAct = true; //РџРµСЂРІС‹Р№ СЌС‚Р°Рї РїСЂРѕР№РґРµРЅ, С‚РµРїРµСЂСЊ РЅР°Рј РѕС‚РєСЂС‹С‚ РІС‚РѕСЂРѕР№ РїСѓРЅРєС‚ РјРµРЅСЋ!
+	}
+	}
+
+//---------------------------------------------------------------------------
+//РРќРўР•Р Р¤Р•Р™РЎ РЎРўР РђРќРР¦Р« "РРќР”РР’РР”РЈРђР›Р¬РќРћР• Р—РђР”РђРќРР•"
+void indivTaskInter() 
+{
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Р—Р°РјР°Р·С‹РІР°РµРј РїСЂРµРґС‹РґСѓС‰РµРµ
+	system("CLS"); //РћС‡РёС‰Р°РµРј РѕС‚ С‚РµРєСЃС‚Р°
+	bool checkExit = 0;
+	if (checkFirstAct == false){ //Р•СЃР»Рё РЅРµ РїСЂРѕС€Р»Рё РїРµСЂРІС‹Р№ РїСѓРЅРєС‚ "Р’Р’РћР” РўР•РљРЎРўРђ"
+	    drawImageToDisplay("image//iTNotAvailable.bmp", 50, 250, 15, 15); //Р’С‹РІРѕРґ РєР°СЂС‚РёРЅРєРё "РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Рµ Р·Р°РґР°РЅРёСЏ РќР•Р”РћРЎРўРЈРџРќР«!"
+		while (checkExit == 0) {
+		     cout << "\n\n\n\n\n\n\n"; //РћС‚СЃС‚СѓРї РїРѕРґРїСЂР°РІР»РµРЅ РїРѕРґ РєР°СЂС‚РёРЅРєСѓ
+			 cout << "Р’С‹Р№С‚Рё РІ РјРµРЅСЋ? 1/0" << endl;
+			 cin >> checkExit;
+		}
+		returnToMenu();
+	} else {
+        drawImageToDisplay("image//indivTask.bmp", 50, 250, 15, 15); //Р’С‹РІРѕРґ РєР°СЂС‚РёРЅРєРё "РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Рµ Р·Р°РґР°РЅРёСЏ РќР•Р”РћРЎРўРЈРџРќР«!"
+		//
+		//Р’Р«Р’РћР” РљРђР–Р”РћР“Рћ РРќР”РР’РР”РЈРђР›Р¬РќРћР“Рћ Р—РђР”РђРќРРЇ Р Р•Р“Рћ РћРўР’Р•РўРђ
+		//
+		while (checkExit == 0) {
+		    cout << "\n\n\n\n\n\n\n"; //РћС‚СЃС‚СѓРї РїРѕРґРїСЂР°РІР»РµРЅ РїРѕРґ РєР°СЂС‚РёРЅРєСѓ
+			cout << "Р’С‹Р№С‚Рё РІ РјРµРЅСЋ? 1/0" << endl;
+			cin >> checkExit;
+		}
+		returnToMenu();
+	}
+}
+//---------------------------------------------------------------------------
+//РўРЈРў РџР РћРР—Р’РћР”РРўРЎРЇ РџР РР’РЇР—РљРђ Рљ Р”Р•Р™РЎРўР’РР® РџРћРЎР›Р• Р’Р’РћР”Рђ РљРћРњРђРќР”Р«
 int menuDo()
 {
 	menuDesign();
 	switch (point){
-	case 1: 
-		say("КОМАНДА 1");
+	case 1: //Р’Р’РћР” РўР•РљРЎРўРђ
+		entryTextInter(); 
+		returnToMenu();
 	break;
-	case 2: 
-		say("КОМАНДА 2");
+	case 2: //РРќР”РР’РР”РЈРђР›Р¬РќР«Р• Р—РђР”РђРќРРЇ
+		indivTaskInter();
+		returnToMenu();
 	break;
 	case 3: 
-		say("КОМАНДА 3");
-	break;
-	case 4: 
-		return 0;
+		return 0; //Р’С‹С…РѕРґ
 	break;
 	}
 	return 0;
@@ -139,15 +195,16 @@ int menuDo()
 //---------------------------------------------------------------------------
 void returnToMenu()
 {
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Р—Р°РјР°Р·С‹РІР°РµРј С‡С‘СЂРЅРѕР№ С€Р°РїРєРѕР№
 	system("CLS");
 	menuDo();
 }
  //---------------------------------------------------------------------------
 int menuRun () 
 {
-	system("chcp 1251 > nul"); // Русифицируем
-	animationLogo();           // Выводим лого
-	system("CLS");             // Выносим все текстовые из консольки
+	system("chcp 1251 > nul"); // Р СѓСЃРёС„РёС†РёСЂСѓРµРј
+	animationLogo();           // Р’С‹РІРѕРґРёРј Р»РѕРіРѕ
+	system("CLS");             // Р’С‹РЅРѕСЃРёРј РІСЃРµ С‚РµРєСЃС‚РѕРІС‹Рµ РёР· РєРѕРЅСЃРѕР»СЊРєРё
 	menuDo(); 
 	return 0;
 }
