@@ -22,18 +22,26 @@ char* inputText()
 		// Проверка введенного символа
 		bool isLowerLatin = (ch >= 'a' && ch <= 'z');
 		bool isUpperLatin = (ch >= 'A' && ch <= 'Z');
-		bool isPunctMarks = (ch == ' '||ch == ','||ch == '.'||ch == '-');
+		bool isPunctMarks = (strchr(ALL_DELIMS, ch) != NULL);
 		if ( isLowerLatin || isUpperLatin || isPunctMarks)
-			text[count++] = ch;
-		else if (ch == BACK_SYMBOL && count > 0)
+		{
+			if (isPunctMarks && text[count-1] == ch)
+				ch = BEEP_SYMBOL;
+			else
+				text[count++] = ch;
+		}
+		else if (ch == BACK_SYMBOL && count > 0) 
+		{
+			cout << BACK_SYMBOL << ' ';
 			count--;
-		else if (ch == END_OF_TEXT)
+		}
+		else if (ch == SEOT_SYMBOL)
 			text[count++] = '\0';
 		else
 			ch = BEEP_SYMBOL; // Аналогично: Beep(1000, 400);
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		cout << ch; // Выводим, чтобы пользователь видел, что он вводит
-	} while (ch != END_OF_TEXT);
+	} while (ch != SEOT_SYMBOL);
 	return text;
 }
 //---------------------------------------------------------------------------
@@ -47,9 +55,9 @@ Text* getText(const char *txt)
 	text->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
 	while (*ptr != '\0')     // Считаем кол-во предложений (по точкам)
 	{
-		bool pass = (*(ptr+1) == ' ' && *(ptr+2) == '\0');
-		bool isPoint = (*ptr == '.' && *(ptr+1) != '.');
-		if (isPoint && *(ptr+1) != '\0' && !pass) text->size++; 
+		bool isPoint = (*ptr == '.' && *(ptr+1) != '\0');
+		bool pass = (*(ptr+1) == ' ' && (*(ptr+2) == '\0' || *(ptr+2) == '.'));
+		if (isPoint && !pass && ptr != txt) text->size++; 
 		ptr++;
 	}
 	text->sent = new Sentence *[text->size];
@@ -60,7 +68,8 @@ Text* getText(const char *txt)
 	token = strtok_s(token, delim, &next_token); 
 	while (token != NULL && count < text->size)
 	{
-		text->sent[count++] = getSentence(token);
+		if (strcmp(token, " ") != 0)
+			text->sent[count++] = getSentence(token);
 		token = strtok_s(NULL, delim, &next_token);
 	}
 	return text;
@@ -85,8 +94,8 @@ Sentence* getSentence(const char *txt)
 	sent->size = 1;          // Учитываем, что у нас должно быть хотя бы одно
 	while (*ptr != '\0')     // Считаем кол-во слов (по пробелам)
 	{
-		bool isSpace = *ptr == ' ' && *(ptr+1) != ' ';
-		if (isSpace && *(ptr+1) != '\0' && ptr != txt) sent->size++;
+		bool isSpace = (*ptr == ' ' && *(ptr+1) != '\0');
+		if (isSpace && ptr != txt) sent->size++;
 		ptr++;
 	}
 	sent->word = new Word *[sent->size];
@@ -121,12 +130,13 @@ Word* getWord(const char *txt)
 	unsigned len = strlen(txt);
 	word->symbols = new char[len+1];
 	strcpy(word->symbols, txt);
-	if (txt[len-1] == ',') {
-		word->attr = 1;
+	if (strchr(ALL_DELIMS, txt[len-1])) {
+		word->attr = word->symbols[len-1];
 		word->symbols[len-1] = '\0';
 	} else {
 		word->attr = 0;
 	}
+	word->flag = false;
 	return word;
 }
 //---------------------------------------------------------------------------

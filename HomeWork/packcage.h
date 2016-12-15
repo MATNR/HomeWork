@@ -9,22 +9,24 @@
 //---------------------------------------------------------------------------
 #include <iostream>
 #include <fstream>
-#include <conio.h>
-#include <Windows.h>
+#include <iomanip>
+#include <conio.h>   // Для getch()
+#include <Windows.h> // Итак прилинкуется, однако фиг с ним, пусть будет
 //---------------------------------------------------------------------------
 using namespace std;
 //---------------------------------------------------------------------------
 const bool DEBUG = 1; // Вывоод отладочной информации - да/нет (1/0)
-const int MAX_TEXT_LEN = 1024;
-const char END_OF_TEXT = 0x1a;
-const char BEEP_SYMBOL = 0x07;
-const char BACK_SYMBOL = 0x08;
+const int MAX_TEXT_LEN = 1024; // Максимальная длина текста
+const char SEOT_SYMBOL = 0x1a; // Специальный символ завершения текста (^Z)
+const char BEEP_SYMBOL = 0x07; // Символ вывода сигнала
+const char BACK_SYMBOL = 0x08; // Символ возврата (удаления) символа
+const char ALL_DELIMS[] = " ,.-:;";
 //---------------------------------------------------------------------------
 struct Word 
 {
 	char *symbols;    // Массив символов слова
-	int len;          // Длина слова
-	int attr;         // Атрибуты слова (0 - ничего, 1 - запятая)
+	int attr;         // Атрибуты слова
+	bool flag;        // Флаг общего назначения (Ф.О.Н.)
 	~Word();          // Очистка памяти
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// Классическая перегрузка оператора <<
@@ -38,7 +40,8 @@ struct Word
 	friend ostream& operator <<(ostream &os, const Word *n)
 	{
 		os << n->symbols;
-		if (n->attr) os << ',';
+		if (n->attr) 
+			os << (char)n->attr; // Довыводим атрибуты
 		return os;
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +59,6 @@ struct Sentence
 		{
 			os << *(n.word[i]);
 			if (i != n.size-1) os << " ";
-			else os << ".";
 		}
 		return os;
 	}
@@ -65,9 +67,9 @@ struct Sentence
 	{
 		for (int i = 0; i < n->size; ++i)
 		{
-			os << *(n->word[i]);
+			os << n->word[i];
 			if (i != n->size-1) os << " ";
-			else os << ".";
+			else os << '.';
 		}
 		return os;
 	}
@@ -95,7 +97,7 @@ struct Text
 	{
 		for (int i = 0; i < n->size; ++i)
 		{
-			os << *(n->sent[i]);
+			os << n->sent[i];
 			if (i != n->size-1) os << " ";
 			else os << "\n";
 		}
