@@ -25,7 +25,7 @@ char* inputText()
 		bool isPunctMarks = (ch == ' '||ch == ','||ch == '.'||ch == '-');
 		if ( isLowerLatin || isUpperLatin || isPunctMarks)
 			text[count++] = ch;
-		else if (ch == BACK_SYMBOL)
+		else if (ch == BACK_SYMBOL && count > 0)
 			count--;
 		else if (ch == END_OF_TEXT)
 			text[count++] = '\0';
