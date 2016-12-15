@@ -9,6 +9,7 @@
 HWND hwnd = FindWindow("ConsoleWindowClass", NULL); //Вызываем хэндлер
 HDC dc = GetDC(hwnd);
 int point = 0;
+bool checkFirstAct = false; //Переменная для проверки 
 //---------------------------------------------------------------------------
 enum color { //А - более светлый вариант, B - более тёмный
 	BLACK = 0,
@@ -106,7 +107,7 @@ void menuDesign()
 	drawImageToDisplay("image//EnterComands.bmp", 50, 250, 195, 15);
 	for (int t = 0; t < 21; t++) cout << "\n";
 	cin >> point;
-	while (point >= 5 || point == 0){
+	while (point >= 4 || point == 0){
 	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0);
 	drawImageToDisplay("image//Menu.bmp", 190, 250, 15, 15);
 	drawImageToDisplay("image//FailComand.bmp", 50, 250, 195, 15);
@@ -116,22 +117,78 @@ void menuDesign()
 	}
 }
 //---------------------------------------------------------------------------
+//ИНТЕРФЕЙС СТРАНИЦЫ "ВВОД ТЕКСТА"
+void entryTextInter() 
+{
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем предыдущее
+	system("CLS"); //Очищаем от текста
+	drawImageToDisplay("image//EnterText.bmp", 50, 250, 15, 15); //Вывод картинки "Ввод текста"
+	int checkEntry = 0;
+	int y; //УДАЛИТЬ ПРИ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА
+	do { 
+	cout << "\n\n\n\n\n\n"; //Отступ подправлен под картинку
+	cin >> y; //УДАЛИТЬ ПРИ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА
+
+	//ПОДПРАВИТЬ ПРОВЕРКУ ПОСЛЕ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА ~~~~~~~~~~~~~~~~~~~~~~
+	if (y == 666) { checkEntry = 1; } else {  //666 - верное число... вухахах 
+		checkEntry = 0; 
+		system("CLS");
+		drawImageToDisplay("image//RewriteText.bmp", 50, 250, 15, 15); //Вывод картинки "ПЛОХОЙ ТЕКСТ, ПОПРОБУЙТЕ СНОВА"
+	}
+	//ПОДПРАВИТЬ ПРОВЕРКУ ПОСЛЕ ВКЛЮЧЕНИИ ФУНКЦИИ ВВОДА ~~~~~~~~~~~~~~~~~~~~~~
+
+	} while (checkEntry == 0);
+
+	if (checkEntry == 1) { //Если этап с проверкой правильности текста прошёл на ОК
+		checkFirstAct = true; //Первый этап пройден, теперь нам открыт второй пункт меню!
+	}
+	}
+
+//---------------------------------------------------------------------------
+//ИНТЕРФЕЙС СТРАНИЦЫ "ИНДИВИДУАЛЬНОЕ ЗАДАНИЕ"
+void indivTaskInter() 
+{
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем предыдущее
+	system("CLS"); //Очищаем от текста
+	bool checkExit = 0;
+	if (checkFirstAct == false){ //Если не прошли первый пункт "ВВОД ТЕКСТА"
+		drawImageToDisplay("image//iTNotAvailable.bmp", 50, 250, 15, 15); //Вывод картинки "Индивидуальные задания НЕДОСТУПНЫ!"
+		while (checkExit == 0) {
+			 cout << "\n\n\n\n\n\n\n"; //Отступ подправлен под картинку
+			 cout << "Выйти в меню? 1/0" << endl;
+			 cin >> checkExit;
+		}
+		returnToMenu();
+	} else {
+		drawImageToDisplay("image//indivTask.bmp", 50, 250, 15, 15); //Вывод картинки "Индивидуальные задания НЕДОСТУПНЫ!"
+
+		//ВЫВОД КАЖДОГО ИНДИВИДУАЛЬНОГО ЗАДАНИЯ И ЕГО ОТВЕТА
+		//doMyHomeWork(text); // Функция выполнения домашнего задания [:SG:]
+
+		while (checkExit == 0) {
+			cout << "\n\n\n\n\n\n\n"; //Отступ подправлен под картинку
+			cout << "Выйти в меню? 1/0" << endl;
+			cin >> checkExit;
+		}
+		returnToMenu();
+	}
+}
+//---------------------------------------------------------------------------
 //ТУТ ПРОИЗВОДИТСЯ ПРИВЯЗКА К ДЕЙСТВИЮ ПОСЛЕ ВВОДА КОМАНДЫ
 int menuDo()
 {
 	menuDesign();
 	switch (point){
-	case 1: 
-		say("КОМАНДА 1");
+	case 1: //ВВОД ТЕКСТА
+		entryTextInter(); 
+		returnToMenu();
 	break;
-	case 2: 
-		say("КОМАНДА 2");
+	case 2: //ИНДИВИДУАЛЬНЫЕ ЗАДАНИЯ
+		indivTaskInter();
+		returnToMenu();
 	break;
 	case 3: 
-		say("КОМАНДА 3");
-	break;
-	case 4: 
-		return 0;
+		return 0; //Выход
 	break;
 	}
 	return 0;
@@ -139,6 +196,7 @@ int menuDo()
 //---------------------------------------------------------------------------
 void returnToMenu()
 {
+	drawImageToDisplay("image//Black.bmp", 1000, 1000, 0, 0); //Замазываем чёрной шапкой
 	system("CLS");
 	menuDo();
 }
