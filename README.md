@@ -1,4 +1,4 @@
-# Командный лабораторный проект #
+﻿# Командный лабораторный проект #
 
 ## Постановка задачи ##
 
@@ -16,6 +16,9 @@
 [wiki-post]: <https://github.com/MATNR/HomeWork/wiki/Постановка-задачи>
 
 ## Основные соглашения ##
+
+В режиме DEBUG компилируется с минималистичным интерфейсом
+В режиме RELEASE - с полным и красочным интерфейсом
 
 Структуры, хранятся в packcage.h:
 ```cpp
@@ -53,13 +56,13 @@ void say(const char *msg);              // Вспомогательная фун
 
 Пример работы со структурами:
 ```cpp
-  // Создаем слово
-  Word *w = new Word;
+  	// Создаем слово
+ 	Word *w = new Word;
 	w->len = 5;
 	w->symbols = new char[w->len];
 	w->symbols = "hell";
 
-  // Создаем из слов предложение
+  	// Создаем из слов предложение
 	Sentence *s = new Sentence;
 	s->size = 3;
 	s->word = new Word*[s->size];
@@ -67,7 +70,7 @@ void say(const char *msg);              // Вспомогательная фун
 	s->word[1] = w;
 	s->word[2] = w;
 
-  // Из предложений - текст
+  	// Из предложений - текст
 	Text *t = new Text;
 	t->size = 2;
 	t->sent = new Sentence*[t->size];
@@ -75,8 +78,8 @@ void say(const char *msg);              // Вспомогательная фун
 	t->sent[1] = s;
 	cout << *t;
 
-  // Обращаемся к конкретному слову текста
-  cout << t->sent[1]->word[2] << endl; 
+  	// Обращаемся к конкретному слову текста
+  	cout << t->sent[1]->word[2] << endl; 
 ```
 
 ## Список задач для каждого ##
@@ -94,12 +97,12 @@ void say(const char *msg);              // Вспомогательная фун
 | Sentence | Михаил | OK |
 | Text | Михаил | OK |
 | inputText | Артем | OK |
-| getText | Артем, Михаил | NO |
-| getSentence | Никита, Михаил | NO |
-| getWord | Роман, Тагир | NO |
-| ~Text | Артем, Михаил | NO |
-| ~Sentence | Никита, Михаил | NO |
-| ~Word | Роман, Тагир | NO |
+| getText | Артем, Михаил | OK |
+| getSentence | Никита, Михаил | OK |
+| getWord | Роман, Тагир | OK |
+| ~Text | Артем, Михаил | OK |
+| ~Sentence | Никита, Михаил | OK |
+| ~Word | Роман, Тагир | OK |
 
 Ключи: 
 - `OK` - готово  
@@ -111,7 +114,6 @@ void say(const char *msg);              // Вспомогательная фун
 
 #### Список и описание основных веток #####
 `master` - основная ветка, защищена от записи  
-`readme-work` - ветка для работы над Readme.md  
 `shadow` - ветка изменений Михаилa  
 `HeliSRaiNBranch` - ветка изменений Тагира
 
