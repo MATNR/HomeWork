@@ -13,6 +13,8 @@
 #include <dos.h>
 #include "packcage.h"
 //---------------------------------------------------------------------------
+#include "../Personal/mywork.h" // Для выполнения индивидуального задания
+//---------------------------------------------------------------------------
 const int WAIT_TIME = 5000;
 const int WAIT_TIME_TO_PRINT = 250;
 const int WAIT_TIME_TO_LOGO = 500;
