@@ -24,12 +24,18 @@
     <ClCompile Include="interface.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="..\Personal\mywork.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="packcage.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="interface.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Personal\mywork.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

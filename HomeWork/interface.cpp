@@ -180,8 +180,8 @@ Text *indivTaskInter(Text *text)
 
 	cout << "\n\n\n\n\n\n\n"; //Отступ подправлен под картинку
 	// ВЫВОД КАЖДОГО ИНДИВИДУАЛЬНОГО ЗАДАНИЯ И ЕГО ОТВЕТА
-	// doMyHomeWork(text); // Функция выполнения домашнего задания :SG:
-	printText(text);
+	text = doMyHomeWork(text); // Функция выполнения домашнего задания :SG:
+	//printText(text);
 
 	system("pause");
 	return text;
@@ -262,7 +262,7 @@ Text *indivTaskInter(Text *text)
 		system("pause");
 		return NULL;
 	}
-	printText(text);
+	text = doMyHomeWork(text);
 	system("pause");
 	return text;
 }
