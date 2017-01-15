@@ -113,9 +113,9 @@ void say(const char *msg);              // Вспомогательная фун
 ## Архитектура репозитория ##
 
 #### Список и описание основных веток #####
-`[master](https://github.com/MATNR/HomeWork/tree/master)` - основная ветка, защищена от записи  
-`[shadow](https://github.com/MATNR/HomeWork/tree/shadow)` - ветка изменений Михаилa  
-`[helisrain](https://github.com/MATNR/HomeWork/tree/helisrain)` - ветка изменений Тагира
+[`master`](https://github.com/MATNR/HomeWork/tree/master) - основная ветка, защищена от записи  
+[`shadow`](https://github.com/MATNR/HomeWork/tree/shadow) - ветка изменений Михаилa  
+[`helisrain`](https://github.com/MATNR/HomeWork/tree/helisrain) - ветка изменений Тагира
 
 #### Небольшой перечень фактов ####
 1. Мастер-ветка (`master`) защищена от прямой записи и принудительных коммитов. Для внесения изменений создаем отдельные ветки и запрашиваем pull-request в мастер.  
